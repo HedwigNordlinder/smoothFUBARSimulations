@@ -1,3 +1,4 @@
+using Pkg
 Pkg.activate(".")
 Pkg.add(url="https://github.com/HedwigNordlinder/CodonMolecularEvolution.jl")
 using MolecularEvolution, CodonMolecularEvolution, Distributions
