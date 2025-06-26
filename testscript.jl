@@ -1,40 +1,87 @@
 using Pkg
 Pkg.activate(".")
 Pkg.add(url="https://github.com/HedwigNordlinder/CodonMolecularEvolution.jl")
-using MolecularEvolution, CodonMolecularEvolution, Distributions
-
-function flu_Ne(t; 
-    baseline_Ne = 1000,     # baseline infected population
-    seasonal_amplitude = 0.8, # how much seasonal variation (0-1)
-    peak_time = 0.25,       # winter peak (fraction of year)
-    period = 1.0            # yearly cycle
-)
-    # Seasonal pattern: peaks in winter, troughs in summer
-    seasonal_factor = 1 + seasonal_amplitude * cos(2π * (t/period - peak_time))
-    return baseline_Ne * seasonal_factor
-end
-function hospital_sampling_rate(t;
-    base_rate = 0.1,
-    seasonal_strength = 0.5,  # how much seasonal variation
-    peak_time = 0.25,
-    period = 1.0
-)
-    # exp(cos()) is always positive and gives nice seasonal variation
-    seasonal_factor = exp(seasonal_strength * cos(2π * (t/period - peak_time)))
-    return base_rate * seasonal_factor
-end
+using MolecularEvolution, CodonMolecularEvolution, Distributions, Plots, Phylo, DataFrames, CSV, Iterators
+include("plot_simulation_data.jl")
 
 α_distribution = Gamma(10,0.1)
 β_distribution = Exponential(1)
-ntaxa = 100
+function create_simulation_parameter_csv(output_file::String = "simulation_parameters.csv")
+    # Parameter combinations to explore
+    ntaxa_values = [10, 20, 50, 100, 200]
+    nsites_values = [100, 500, 1000]
+    diversifying_sites_values = [1, 10, 50]
+    scenarios = ["LogisticScenario()", "SeasonalScenario()"]
+    
+    # Static parameters (adjust these based on your uploaded CSV)
+    static_params = (
+        alpha_distribution = "Gamma(2.0, 1.0)",
+        beta_distribution = "Gamma(1.5, 2.0)", 
+        nucleotide_model = "default",
+        f3x4_model = "default",
+        target_normalisation = 1.0
+    )
+    
+    # Create all combinations
+    combinations = collect(Iterators.product(ntaxa_values, nsites_values, diversifying_sites_values, scenarios))
+    
+    # Create DataFrame
+    df = DataFrame(
+        scenario_name = String[],
+        ntaxa = Int[],
+        nsites = Int[],
+        diversifying_sites = Int[],
+        coalescence_scenario = String[],
+        alpha_distribution = String[],
+        beta_distribution = String[],
+        nucleotide_model = String[],
+        f3x4_model = String[],
+        target_normalisation = Float64[]
+    )
+    
+    # Generate rows
+    for (ntaxa, nsites, div_sites, scenario) in combinations
+        scenario_name = "$(lowercase(replace(scenario, "()" => "")))_t$(ntaxa)_s$(nsites)_d$(div_sites)"
+        
+        push!(df, (
+            scenario_name = scenario_name,
+            ntaxa = ntaxa,
+            nsites = nsites,
+            diversifying_sites = div_sites,
+            coalescence_scenario = scenario,
+            alpha_distribution = static_params.alpha_distribution,
+            beta_distribution = static_params.beta_distribution,
+            nucleotide_model = static_params.nucleotide_model,
+            f3x4_model = static_params.f3x4_model,
+            target_normalisation = static_params.target_normalisation
+        ))
+    end
+    
+    # Write to CSV
+    CSV.write(output_file, df)
+    
+    println("Created $(nrow(df)) simulation scenarios in $output_file")
+    println("Combinations: $(length(ntaxa_values)) ntaxa × $(length(nsites_values)) nsites × $(length(diversifying_sites_values)) diversifying_sites × $(length(scenarios)) scenarios")
+    
+    return df
+end
 
-nsites = 100
-diversifying_sites = 5
-
+# Run it
+df = create_simulation_parameter_csv("simulation_parameters.csv")
 # This is the main simulation function
 
-result = simulate_k_diversifying_sites(ntaxa,flu_Ne, hospital_sampling_rate, α_distribution, β_distribution, 
-                                        nsites, diversifying_sites, CodonMolecularEvolution.demo_nucmat, 
-                                        CodonMolecularEvolution.demo_f3x4)
+#result_star = simulate_k_diversifying_sites(ntaxa,SeasonalScenario(;sampling_divisor=25), α_distribution, β_distribution, 
+#                                        nsites, diversifying_sites, CodonMolecularEvolution.demo_nucmat, 
+#                                        CodonMolecularEvolution.demo_f3x4)
 
-save_simulation_data(result)                                    
+#save_simulation_data(result_star, name="seasonal")     
+#save_tree_report("seasonal")                               
+#result_ladder = simulate_k_diversifying_sites(ntaxa,LogisticScenario(), α_distribution, β_distribution, 
+#                                        nsites, diversifying_sites, CodonMolecularEvolution.demo_nucmat, 
+#                                        CodonMolecularEvolution.demo_f3x4)
+
+#save_simulation_data(result_ladder, name="logistic")   
+
+ 
+#save_tree_report("logistic")
+run_simulation_batch("simulation_parameters.csv","simulations")
