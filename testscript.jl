@@ -1,7 +1,7 @@
 using Pkg
 Pkg.activate(".")
 Pkg.add(url="https://github.com/HedwigNordlinder/CodonMolecularEvolution.jl")
-using MolecularEvolution, CodonMolecularEvolution, Distributions, Plots, Phylo, DataFrames, CSV, Iterators
+using MolecularEvolution, CodonMolecularEvolution, Distributions, Plots, Phylo, DataFrames, CSV
 include("plot_simulation_data.jl")
 
 α_distribution = Gamma(10,0.1)
@@ -15,8 +15,8 @@ function create_simulation_parameter_csv(output_file::String = "simulation_param
     
     # Static parameters (adjust these based on your uploaded CSV)
     static_params = (
-        alpha_distribution = "Gamma(2.0, 1.0)",
-        beta_distribution = "Gamma(1.5, 2.0)", 
+        alpha_distribution = "Gamma(10,0.1)",
+        beta_distribution = "Exponential(1)", 
         nucleotide_model = "default",
         f3x4_model = "default",
         target_normalisation = 1.0
