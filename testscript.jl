@@ -1,11 +1,13 @@
 using Pkg
 Pkg.activate(".")
+Pkg.rm("CodonMolecularEvolution")
 Pkg.add(url="https://github.com/HedwigNordlinder/CodonMolecularEvolution.jl")
 using MolecularEvolution, CodonMolecularEvolution, Distributions, Plots, Phylo, DataFrames, CSV
 include("plot_simulation_data.jl")
 
 α_distribution = Gamma(10,0.1)
 β_distribution = Exponential(1)
+
 function create_simulation_parameter_csv(output_file::String = "simulation_parameters.csv")
     # Parameter combinations to explore
     ntaxa_values = [10, 20, 50, 100, 200]
@@ -13,10 +15,8 @@ function create_simulation_parameter_csv(output_file::String = "simulation_param
     diversifying_sites_values = [1, 10, 50]
     scenarios = ["LogisticScenario()", "SeasonalScenario(;sin_divisor=1.0)"]
     
-    # Static parameters (adjust these based on your uploaded CSV)
+    # Static parameters
     static_params = (
-        alpha_distribution = "Gamma(10,0.1)",
-        beta_distribution = "Exponential(1)", 
         nucleotide_model = "default",
         f3x4_model = "default",
         target_normalisation = 10.0
@@ -30,10 +30,8 @@ function create_simulation_parameter_csv(output_file::String = "simulation_param
         scenario_name = String[],
         ntaxa = Int[],
         nsites = Int[],
-        diversifying_sites = Int[],
         coalescence_scenario = String[],
-        alpha_distribution = String[],
-        beta_distribution = String[],
+        rate_sampler = String[],
         nucleotide_model = String[],
         f3x4_model = String[],
         target_normalisation = Float64[]
@@ -43,14 +41,19 @@ function create_simulation_parameter_csv(output_file::String = "simulation_param
     for (ntaxa, nsites, div_sites, scenario) in combinations
         scenario_name = "$(lowercase(replace(scenario, "()" => "")))_t$(ntaxa)_s$(nsites)_d$(div_sites)"
         
+        # Create the rate sampler specification in Julia code
+        if div_sites > 0
+            rate_sampler = "DiversifyingSitesSampler(UnivariateRateSampler(Gamma(10,0.1), Exponential(1)), $div_sites, $nsites)"
+        else
+            rate_sampler = "AllSitesSampler(UnivariateRateSampler(Gamma(10,0.1), Exponential(1)))"
+        end
+        
         push!(df, (
             scenario_name = scenario_name,
             ntaxa = ntaxa,
             nsites = nsites,
-            diversifying_sites = div_sites,
             coalescence_scenario = scenario,
-            alpha_distribution = static_params.alpha_distribution,
-            beta_distribution = static_params.beta_distribution,
+            rate_sampler = rate_sampler,
             nucleotide_model = static_params.nucleotide_model,
             f3x4_model = static_params.f3x4_model,
             target_normalisation = static_params.target_normalisation
@@ -68,20 +71,8 @@ end
 
 # Run it
 df = create_simulation_parameter_csv("simulation_parameters.csv")
-# This is the main simulation function
 
-#result_star = simulate_k_diversifying_sites(ntaxa,SeasonalScenario(;sampling_divisor=25), α_distribution, β_distribution, 
-#                                        nsites, diversifying_sites, CodonMolecularEvolution.demo_nucmat, 
-#                                        CodonMolecularEvolution.demo_f3x4)
-
-#save_simulation_data(result_star, name="seasonal")     
-#save_tree_report("seasonal")                               
-#result_ladder = simulate_k_diversifying_sites(ntaxa,LogisticScenario(), α_distribution, β_distribution, 
-#                                        nsites, diversifying_sites, CodonMolecularEvolution.demo_nucmat, 
-#                                        CodonMolecularEvolution.demo_f3x4)
-
-#save_simulation_data(result_ladder, name="logistic")   
-
- 
-#save_tree_report("logistic")
-run_simulation_batch("simulation_parameters.csv","simulations")
+# Run the batch simulation
+run_simulation_batch("simulation_parameters.csv", "simulations")
+run_fubar_benchmark("simulations/",[DirichletFUBAR(), SKBDIFUBAR()])
+generate_roc_curves("simulations/")
