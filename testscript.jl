@@ -22,7 +22,7 @@ function create_simulation_parameter_csv(output_file::String = "simulation_param
     static_params = (
         nucleotide_model = "default",
         f3x4_model = "default",
-        target_normalisation = 10.0
+        target_normalisation = 60.0
     )
     
     # Create all combinations
