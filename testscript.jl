@@ -77,5 +77,5 @@ df = create_simulation_parameter_csv("simulation_parameters.csv")
 
 # Run the batch simulation
 run_simulation_batch("simulation_parameters.csv", "simulations")
-run_fubar_benchmark("simulations/",[DirichletFUBAR(), SKBDIFUBAR()])
+run_fubar_benchmark("simulations/",[DirichletFUBAR(), SKBDIFUBAR(), FIFEFUBAR()])
 generate_roc_curves("simulations/")
