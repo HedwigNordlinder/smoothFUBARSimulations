@@ -22,7 +22,8 @@ function create_simulation_parameter_csv(output_file::String = "simulation_param
     static_params = (
         nucleotide_model = "default",
         f3x4_model = "default",
-        target_normalisation = 60.0
+        target_normalisation = 60.0,
+        n_replicates = 2
     )
     
     # Create all combinations
@@ -55,7 +56,8 @@ function create_simulation_parameter_csv(output_file::String = "simulation_param
             rate_sampler = rate_sampler,
             nucleotide_model = static_params.nucleotide_model,
             f3x4_model = static_params.f3x4_model,
-            target_normalisation = static_params.target_normalisation
+            target_normalisation = static_params.target_normalisation,
+            n_replicates = static_params.n_replicates
         ))
     end
     
