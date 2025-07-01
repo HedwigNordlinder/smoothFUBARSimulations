@@ -38,7 +38,8 @@ function create_simulation_parameter_csv(output_file::String = "simulation_param
         rate_sampler = String[],
         nucleotide_model = String[],
         f3x4_model = String[],
-        target_normalisation = Float64[]
+        target_normalisation = Float64[],
+        n_replicates = Int64[]
     )
     
     # Generate rows
