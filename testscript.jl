@@ -11,23 +11,24 @@ include("plot_simulation_data.jl")
 function create_simulation_parameter_csv(output_file::String = "simulation_parameters.csv")
     # Parameter combinations to explore
     #ntaxa_values = [10, 20, 50, 100, 200]
-    ntaxa_values = [10,20]
+    ntaxa_values = [20,100,500]
     # nsites_values = [100, 500, 1000]
-    nsites_values = [50,100]
+    nsites_values = [100,500,2500]
     # diversifying_sites_values = [1, 10, 50]
-    diversifying_sites_values = [0]
+    diversifying_sites_values = [0.01,0.05,0.1,0.2]
     scenarios = ["LogisticScenario()", "SeasonalScenario(;sin_divisor=1.0)"]
-    
+    normalisations = [30.0,60.0,120.0]
+    λs = [0.5,1.0,2.0]
     # Static parameters
     static_params = (
         nucleotide_model = "default",
         f3x4_model = "default",
-        target_normalisation = 60.0,
-        n_replicates = 2
+        #target_normalisation = 60.0,
+        n_replicates = 1
     )
     
     # Create all combinations
-    combinations = collect(Iterators.product(ntaxa_values, nsites_values, diversifying_sites_values, scenarios))
+    combinations = collect(Iterators.product(ntaxa_values, nsites_values, diversifying_sites_values, scenarios, normalisations, λs))
     
     # Create DataFrame
     df = DataFrame(
@@ -43,12 +44,11 @@ function create_simulation_parameter_csv(output_file::String = "simulation_param
     )
     
     # Generate rows
-    for (ntaxa, nsites, div_sites, scenario) in combinations
+    for (ntaxa, nsites, div_sites, scenario, normalisation, λ) in combinations
         scenario_name = "$(lowercase(replace(scenario, "()" => "")))_t$(ntaxa)_s$(nsites)_d$(div_sites)"
         
         # Create the rate sampler specification in Julia code
-        rate_sampler = "DiversifyingSitesSampler(UnivariateRateSampler(Gamma(10,0.1), Exponential(1)), $div_sites, $nsites)"
-        
+        rate_sampler = "DiversifyingSitesSampler(UnivariateRateSampler(Gamma(10,0.1), Exponential($λ)), $div_sites, $nsites)"        
         push!(df, (
             scenario_name = scenario_name,
             ntaxa = ntaxa,
@@ -57,7 +57,7 @@ function create_simulation_parameter_csv(output_file::String = "simulation_param
             rate_sampler = rate_sampler,
             nucleotide_model = static_params.nucleotide_model,
             f3x4_model = static_params.f3x4_model,
-            target_normalisation = static_params.target_normalisation,
+            target_normalisation = normalisation,
             n_replicates = static_params.n_replicates
         ))
     end
