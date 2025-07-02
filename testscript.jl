@@ -20,10 +20,7 @@ function create_simulation_parameter_csv(output_file::String="simulation_paramet
     diversifying_sites_values = [0.01]
     scenarios = [
         "LogisticScenario()",
-        "SeasonalScenario(; sin_divisor=12.0,
-                           amplitude=0.5,
-                           baseline_exp=8.5,
-                           sampling_divisor=400.0)"
+        "SeasonalScenario(;sin_divisor=5.0)"
     ]
     normalisations = [120.0, 240.0, 1000.0] # Super high normalisation - just for luls, to see if it actually works
     #λs = [0.5,1.0,2.0]

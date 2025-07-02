@@ -247,8 +247,10 @@ uuid = "944b1d66-785c-5afd-91f1-9de20f533193"
 version = "0.7.8"
 
 [[deps.CodonMolecularEvolution]]
-deps = ["AbstractMCMC", "BenchmarkTools", "CSV", "DataFrames", "Distributions", "EllipticalSliceSampling", "FASTX", "Interpolations", "JSON3", "KrylovKit", "LaTeXStrings", "LinearAlgebra", "MCMCChains", "MolecularEvolution", "NLopt", "NNlib", "PDMats", "ParameterHandling", "Random", "SimpleUnPack", "Statistics", "StatsBase", "Suppressor"]
-path = "/home/hedwig/Documents/Julia/karolinska/summer/CodonMolecularEvolution.jl"
+deps = ["AbstractMCMC", "BenchmarkTools", "CSV", "DataFrames", "Distributions", "EllipticalSliceSampling", "FASTX", "Interpolations", "JSON3", "KrylovKit", "LaTeXStrings", "LinearAlgebra", "MCMCChains", "MolecularEvolution", "NLopt", "NNlib", "PDMats", "ParameterHandling", "ProgressMeter", "Random", "SimpleUnPack", "Statistics", "StatsBase", "Suppressor"]
+git-tree-sha1 = "cf3bab2df6f31d91a07adc04ad04c839fc804ec0"
+repo-rev = "main"
+repo-url = "https://github.com/HedwigNordlinder/CodonMolecularEvolution.jl"
 uuid = "6511b2a3-0bb8-4def-a118-560a7e125e34"
 version = "0.1.0"
 weakdeps = ["Measures", "Phylo", "Plots"]
