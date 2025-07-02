@@ -27,7 +27,7 @@ function create_simulation_parameter_csv(output_file::String="simulation_paramet
     ]
     normalisations = [120.0, 240.0, 1000.0] # Super high normalisation - just for luls, to see if it actually works
     #λs = [0.5,1.0,2.0]
-    λs = [1.0, 4.0]
+    λs = [10.0, 40.0]
     # Static parameters
     static_params = (
         nucleotide_model="default",
@@ -58,7 +58,7 @@ function create_simulation_parameter_csv(output_file::String="simulation_paramet
 
 
         # Create the rate sampler specification in Julia code
-        rate_sampler = "DiversifyingSitesSampler(UnivariateRateSampler(Gamma(10,0.1), Exponential($λ)), $div_sites, $nsites)"
+        rate_sampler = "DiversifyingSitesSampler(UnivariateRateSampler(Gamma(100,0.1), Exponential($λ)), $div_sites, $nsites)"
         push!(df, (
             scenario_name=scenario_name,
             ntaxa=ntaxa,
