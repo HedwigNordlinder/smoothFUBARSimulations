@@ -55,7 +55,7 @@ function create_simulation_parameter_csv(output_file::String="simulation_paramet
 
 
         # Create the rate sampler specification in Julia code
-        rate_sampler = "DiversifyingSitesSampler(UnivariateRateSampler(Gamma(100,0.1), Exponential($λ)), $div_sites, $nsites)"
+        rate_sampler = "DiversifyingSitesSampler(UnivariateRateSampler(Gamma(10,0.1), Exponential($λ)), $div_sites, $nsites)"
         push!(df, (
             scenario_name=scenario_name,
             ntaxa=ntaxa,
