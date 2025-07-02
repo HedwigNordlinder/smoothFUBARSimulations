@@ -2,6 +2,7 @@ using Pkg
 Pkg.activate(".")
 #Pkg.rm("CodonMolecularEvolution")
 #Pkg.develop(path="/home/hedwig/Documents/Julia/karolinska/summer/CodonMolecularEvolution.jl")
+Pkg.add(url="https://github.com/HedwigNordlinder/CodonMolecularEvolution.jl")
 using MolecularEvolution, CodonMolecularEvolution, Distributions, Plots, Phylo, DataFrames, CSV
 include("plot_simulation_data.jl")
 
