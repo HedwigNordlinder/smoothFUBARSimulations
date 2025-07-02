@@ -22,8 +22,8 @@ function create_simulation_parameter_csv(output_file::String="simulation_paramet
         "LogisticScenario()",
         "StandardLadderScenario()"
     ]
-    #normalisations = [1.0,5.0,10.0,20.0] 
-    normalisations = [1.0]
+    normalisations = [1.0,5.0,10.0,20.0] 
+    #normalisations = [1.0]
     #λs = [0.5,1.0,2.0]
     λs = [1.0,2.0]
     # Static parameters
