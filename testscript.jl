@@ -22,7 +22,7 @@ function create_simulation_parameter_csv(output_file::String="simulation_paramet
         "LogisticScenario()",
         "SeasonalScenario(;sin_divisor=5.0)"
     ]
-    normalisations = [120.0, 240.0, 1000.0] # Super high normalisation - just for luls, to see if it actually works
+    normalisations = [5.0,10.0,20.0] 
     #λs = [0.5,1.0,2.0]
     λs = [10.0, 40.0]
     # Static parameters
