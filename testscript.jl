@@ -24,7 +24,7 @@ function create_simulation_parameter_csv(output_file::String="simulation_paramet
     ]
     normalisations = [5.0,10.0,20.0] 
     #λs = [0.5,1.0,2.0]
-    λs = [10.0, 40.0]
+    λs = [1.0,2.0]
     # Static parameters
     static_params = (
         nucleotide_model="default",
