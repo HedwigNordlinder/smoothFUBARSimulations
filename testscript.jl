@@ -11,19 +11,19 @@ include("plot_simulation_data.jl")
 
 function create_simulation_parameter_csv(output_file::String="simulation_parameters.csv")
     # Parameter combinations to explore
-    #ntaxa_values = [20,100,500]
-    ntaxa_values = [20, 100]
-    #nsites_values = [100,500,2500]
-    nsites_values = [100, 200]
+    ntaxa_values = [20,100,500]
+    #ntaxa_values = [20, 100]
+    nsites_values = [100,500,2500]
+    #nsites_values = [100, 200]
 
-    #diversifying_sites_values = [0.01,0.05,0.1,0.2]
-    diversifying_sites_values = [0.01]
+    diversifying_sites_values = [0.01,0.05,0.1,0.2]
+    #diversifying_sites_values = [0.01]
     scenarios = [
         "LogisticScenario()",
         "StandardLadderScenario()"
     ]
-    #normalisations = [1.0,5.0,10.0,20.0] 
-    normalisations = [1.0]
+    normalisations = [1.0,5.0,10.0,20.0] 
+    #normalisations = [1.0]
     λs = [0.5,1.0,2.0]
     #λs = [1.0,2.0,5.0]
     # Static parameters
